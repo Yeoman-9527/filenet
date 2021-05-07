@@ -2,6 +2,7 @@ import os
 import shutil
 import easygui as gui
 from natsort import natsorted
+import json
 
 
 class NeatenSlicer():
@@ -95,10 +96,31 @@ class NeatenSlicer():
         else:
             quit()
 
+    def del_label(self):
+        # TODO: MultiEnterBox records labels
+        l_dict = {}
+        for root, _, file in os.walk(self.path):
+            l_dict[root] = []
+            for label in file:
+                if label.endswith('json'):
+                    l_dict[root].append(label)
+            if l_dict[root]:
+                continue
+            else:
+                del l_dict[root]
+
+        for key, values in l_dict.items():
+            for value in values:
+                file = os.path.join(key, value)
+                with open(file, 'r') as f:
+                    data = json.load(f)
+
+        # return signal
+
     def main(self):
         while True:
             choice = ['1. File Detect', '2. Extract File',
-                      '3．File Slicer', '4．Path Renew', '5．Quit']
+                      '3．File Slicer', '4．Path Renew', '5.Delete Lable', '6．Quit']
             num = gui.buttonbox(
                 f"Current Path : {self.path} \n What you wanna do ?", choices=choice)
             signal = ''
@@ -111,6 +133,8 @@ class NeatenSlicer():
             elif num[0] == '4':
                 signal = self.re_path()
             elif num[0] == '5':
+                signal = self.del_label()
+            elif num[0] == '6':
                 quit()
             else:
                 print(num[0])
@@ -127,3 +151,10 @@ class NeatenSlicer():
 if __name__ == "__main__":
     run = NeatenSlicer()
     run.main()
+
+
+# TODO: DEL LABEL EXAMPLE
+# with open(r'001.json') as f:
+#     data = json.load(f)
+#     with open ('test.json', 'w') as ff:
+#         ff.write(json.dumps(data, indent=4))
