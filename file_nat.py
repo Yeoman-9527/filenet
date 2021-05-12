@@ -38,7 +38,7 @@ class NeatenSlicer():
             signal = gui.buttonbox(centense, choices=['< Back', 'X Quit'])
             return signal
         else:
-            centense = f"Impact file name list: \n {s_list[:20]} \n File amout : {len(d_list) + len(s_list)}"
+            centense = f"Impact file name list: \n {s_list[:20]} \nImpact File amout : {len(s_list)} \nFile amount：{len(d_list) + len(s_list)}"
             signal = gui.buttonbox(centense, choices=['< Back', 'X Quit'])
             return signal
 
@@ -117,6 +117,8 @@ class NeatenSlicer():
 
         # return signal
 
+    
+    
     def main(self):
         while True:
             choice = ['1. File Detect', '2. Extract File',
