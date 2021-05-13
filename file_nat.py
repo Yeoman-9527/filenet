@@ -8,7 +8,7 @@ import json
 class NeatenSlicer():
 
     def __init__(self) -> str:
-        self.path = os.path.dirname(__file__)
+        self.path = '~'
         self.re_path()
 
     def re_path(self):
@@ -97,7 +97,7 @@ class NeatenSlicer():
             quit()
 
     def del_label(self):
-        # TODO: MultiEnterBox records labels
+        delable = gui.enterbox(' Enter label ')
         l_dict = {}
         for root, _, file in os.walk(self.path):
             l_dict[root] = []
@@ -110,15 +110,24 @@ class NeatenSlicer():
                 del l_dict[root]
 
         for key, values in l_dict.items():
-            for value in values:
-                file = os.path.join(key, value)
-                with open(file, 'r') as f:
-                    data = json.load(f)
+            for v in values:
+                lname = os.path.join(key, v)
+                f = open(lname, 'r')
+                data = json.load(f)
+                f.close
+                # Detect
+                shape = []
+                for i in data['shapes']:
+                    if i['label'] != delable:
+                        shape.append(i)
+                # Modify & Write
+                data['shapes'] = shape
+                with open(lname, 'w') as f:
+                    f.write(json.dumps(data, indent=4))
+                    
+        signal = gui.buttonbox(f'Done', choices=['< Back', 'X Quit'])
+        return signal
 
-        # return signal
-
-    
-    
     def main(self):
         while True:
             choice = ['1. File Detect', '2. Extract File',
@@ -153,10 +162,3 @@ class NeatenSlicer():
 if __name__ == "__main__":
     run = NeatenSlicer()
     run.main()
-
-
-# TODO: DEL LABEL EXAMPLE
-# with open(r'001.json') as f:
-#     data = json.load(f)
-#     with open ('test.json', 'w') as ff:
-#         ff.write(json.dumps(data, indent=4))
